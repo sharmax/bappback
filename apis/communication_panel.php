@@ -25,19 +25,24 @@
 						$sql .= "ORDER BY id ASC";
 						if($comm = mysql_query($sql)){
 							$conversation = mysql_fetch_array($comm);
-							while($conversation){
-								$conversations['data'][$conversation['id']] = array();
-								$conversations['data'][$conversation['id']]['bitsid'] = $conversation['bitsid'];
-								$user = mysql_fetch_array(mysql_query("select * from users where bitsid='".$conversation['bitsid']."'"));
-								$conversations['data'][$conversation['id']]['category'] = $user['category'];
-								$conversations['data'][$conversation['id']]['name'] = $user['name'];
-								$conversations['data'][$conversation['id']]['topic'] = $conversation['topic'];
-								$conversations['data'][$conversation['id']]['date'] = $conversation['date'];
-								$conversations['data'][$conversation['id']]['time'] = $conversation['time'];
-								$conversations['data'][$conversation['id']]['admins'] = $conversation['admins'];
-								$conversations['data'][$conversation['id']]['talk'] = $conversation['comms'];
-								$conversations['data'][$conversation['id']]['status'] = $conversation['status'];
-								$conversation = mysql_fetch_array($comm);
+							if($conversation){
+								while($conversation){
+									$conversations['data'][$conversation['id']] = array();
+									$conversations['data'][$conversation['id']]['bitsid'] = $conversation['bitsid'];
+									$user = mysql_fetch_array(mysql_query("select * from users where bitsid='".$conversation['bitsid']."'"));
+									$conversations['data'][$conversation['id']]['category'] = $user['category'];
+									$conversations['data'][$conversation['id']]['name'] = $user['name'];
+									$conversations['data'][$conversation['id']]['topic'] = $conversation['topic'];
+									$conversations['data'][$conversation['id']]['date'] = $conversation['date'];
+									$conversations['data'][$conversation['id']]['time'] = $conversation['time'];
+									$conversations['data'][$conversation['id']]['admins'] = $conversation['admins'];
+									$conversations['data'][$conversation['id']]['talk'] = $conversation['comms'];
+									$conversations['data'][$conversation['id']]['status'] = $conversation['status'];
+									$conversation = mysql_fetch_array($comm);
+								}
+							}
+							else{
+								$conversations['message'] = "No conversations found";
 							}
 						}
 						else{
@@ -50,7 +55,7 @@
 							$conversations['message'] = "Conversation Deleted Successfully!";
 						}
 						else{
-							$conversations['message'] = "Error occurred while Deletion!";
+							$conversations['err_message'] = "Error occurred while Deletion!";
 						}
 					}
 					else if($conversations['action'] == "reply"){
@@ -60,33 +65,44 @@
 							$conv = mysql_fetch_array(mysql_query("select * from communications where id = '".$id."'"));
 							$comms = $_GET['reply'];
 							$comms = str_replace(array("\r\n", "\n", "\r"),"<br />",str_replace("(href=","<a href=",str_replace('")','">',str_replace('//','</a>',$comms))));
+							$x = 0;
 							if($userinfo['category']=="Admin"){
+								$x = 1;
 								$admins = array();
 								$na = substr_count($conv['admins'],";");
 								$p = 0;
-								$x = 0;
 								for($i=1;$i<=$na;$i++){
 									$pos = strpos($conv['admins'],";",$p);
 									$admins[$i-1] = substr($conv['admins'],$p,$pos-$p);
 									if($admins[$i-1]==$userinfo['name']){
-										$x=1;
+										$x=0;
 										$i=$na;
 									}
 									$p = $pos+1;
 								}
+							}
+							$comm = $conv['comms']." ".$userinfo['name']."(Date-".date("d/m/Y").",Time-".date('h:i A').")| ".$comms." //";
+							$conversations['data'][$id] = array();
+							if(mysql_query("UPDATE communications SET comms='".$comm."' WHERE id ='".$id."' AND status like '%open%'")){
+								$conversations['data'][$id]['admins'] = $conv['admins'];
+								$conversations['data'][$id]['talk'] = $conv['comms'];
 								if($x == 1){
 									$admin = $conv['admins'].$userinfo['name'].";";
-									mysql_query("UPDATE communications SET admins='".$admin."' WHERE id ='".$id."'");
+									if(mysql_query("UPDATE communications SET admins='".$admin."' WHERE id ='".$id."'")){
+										$conversations['message'] = "Conversation Updated Successfully!";
+										$conversations['data'][$id]['admins'] = $admin;
+									}
+									else{
+										$conversations['err_message'] = "Error occurred while Replying!";	
+										$conversations['data'][$id]['admins'] = $conv['admins'];
+									}
+									$conversations['data'][$id]['talk'] = $comm;
 								}
-							}
-							$comm = $conv['comms']." ".$userinfo['name']."(Date-".date("d/m/Y").",Time-".date('h:i:s').")| ".$comms." //";
-							if(mysql_query("UPDATE communications SET comms='".$comm."' WHERE id ='".$id."'")){
-								$conversations['message'] = "Conversation Updated Successfully!";
+								
 							}
 							else{
 								$conversations['err_message'] = "Error occurred while Replying!";
 							}
-							$conversations['data'][$id] = array();
 							$conversations['data'][$id]['bitsid'] = $conv['bitsid'];
 							$user = mysql_fetch_array(mysql_query("select * from users where bitsid='".$conv['bitsid']."'"));
 							$conversations['data'][$id]['category'] = $user['category'];
@@ -94,8 +110,6 @@
 							$conversations['data'][$id]['topic'] = $conv['topic'];
 							$conversations['data'][$id]['date'] = $conv['date'];
 							$conversations['data'][$id]['time'] = $conv['time'];
-							$conversations['data'][$id]['admins'] = $conv['admins'];
-							$conversations['data'][$id]['talk'] = $conv['comms'];
 							$conversations['data'][$id]['status'] = $conv['status'];
 						}
 						else{
