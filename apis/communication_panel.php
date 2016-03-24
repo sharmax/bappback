@@ -85,7 +85,7 @@
 							$conversations['data'][$id] = array();
 							if(mysql_query("UPDATE communications SET comms='".$comm."' WHERE id ='".$id."' AND status like '%open%'")){
 								$conversations['data'][$id]['admins'] = $conv['admins'];
-								$conversations['data'][$id]['talk'] = $conv['comms'];
+								$conversations['data'][$id]['talk'] = $comm;
 								if($x == 1){
 									$admin = $conv['admins'].$userinfo['name'].";";
 									if(mysql_query("UPDATE communications SET admins='".$admin."' WHERE id ='".$id."'")){
@@ -94,14 +94,16 @@
 									}
 									else{
 										$conversations['err_message'] = "Error occurred while Replying!";	
-										$conversations['data'][$id]['admins'] = $conv['admins'];
 									}
-									$conversations['data'][$id]['talk'] = $comm;
+								}
+								else{
+									$conversations['message'] = "Conversation Updated Successfully!";
 								}
 								
 							}
 							else{
 								$conversations['err_message'] = "Error occurred while Replying!";
+								$conversations['data'][$id]['talk'] = $conv['comms'];
 							}
 							$conversations['data'][$id]['bitsid'] = $conv['bitsid'];
 							$user = mysql_fetch_array(mysql_query("select * from users where bitsid='".$conv['bitsid']."'"));
