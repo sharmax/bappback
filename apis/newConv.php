@@ -49,14 +49,12 @@
 								$comms = "Title: ".$_GET['inputArray'][1]."<br />"."Author: ".$_GET['inputArray'][2]."<br />"."Accession No.: ".$_GET['inputArray'][3];
 							}
 							else{
-								$month = $_GET['inputArray'][2];
-								$year = $_GET['inputArray'][3];
-								$conversations["data"][$id]['topic'] = "Journal Not Found: ".$title;
-								$comms = "Journal/Magazine Name: ".$title."<br />"."Month: ".$month."<br />"."Year.: ".$year;
+								$conversations["data"][$id]['topic'] = "Journal Not Found: ".$_GET['inputArray'][1];
+								$comms = "Journal/Magazine Name: ".$_GET['inputArray'][1]."<br />"."Month: ".$_GET['inputArray'][2]."<br />"."Year: ".$_GET['inputArray'][3];
 							}
 						}
 						else if($cat == "breco"){
-							$number = count($_GET)/5;
+							$number = count($_GET['inputArray'])/5;
 							$comms = "<table><tr><th>S. No.</th><th>Title</th><th>Author</th><th>Edition</th><th>Publisher</th><th>Year</th></tr>";
 							for($i=0;$i<$number;$i++){
 								$comms .= "<tr><td>".($i+1)."</td><td>".$_GET['inputArray'][5*$i]."</td><td>".$_GET['inputArray'][5*$i + 1]."</td><td>".$_GET['inputArray'][5*$i + 2]."</td><td>".$_GET['inputArray'][5*$i + 3]."</td><td>".$_GET['inputArray'][5*$i + 4]."</td></tr>";
