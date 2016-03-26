@@ -2,6 +2,7 @@
 	include("../config.php");
 	$conversations['err_message'] = '';
 	$conversations['message'] = '';
+	$conversations['search_message'] = '';
 	if(isset($_GET['username'],$_GET['password'])){
 		$user = $_GET['username'];
 		$password = $_GET['password'];
@@ -29,7 +30,7 @@
 							$conversations['data'][$headlines['id']]["pages"] = $headlines['page'];
 						}
 						if(count($conversations['data']) == 0){
-							$conversations['err_message'] = "No headlines found";		
+							$conversations['message'] = "No headlines found";		
 						}
 					}
 					else if($action == "search"){
@@ -38,7 +39,6 @@
 							$startDate = $_GET['startDate'];
 							$endDate = $_GET['endDate'];
 							$sql = array();
-							echo $startDate."<br />";
 							$keyword = "";
 							if(isset($_GET['keyword']) && $_GET['keyword'] != ""){
 								$keyword = $_GET['keyword'];
@@ -49,12 +49,11 @@
 									$sql[] = 'keywords LIKE "%'.substr($keyword, $s, $e).'%"';
 									$s = $e + 1;
 								}
-								$sql = 'SELECT * FROM newsfeed WHERE DATEDIFF(date,"'.$startDate.'") >= 0 and DATEDIFF(date,"'.$endDate.'") <= 0 and '.implode(" OR ", $sql).'';
+								$sql = 'SELECT * FROM newsfeed WHERE DATEDIFF(date,"'.$startDate.'") >= 0 and DATEDIFF(date,"'.$endDate.'") <= 0 and ('.implode(" OR ", $sql).')';
 							}
 							else{
-								$sql = 'SELECT * FROM newsfeed WHERE DATEDIFF(date,"'.$startDate.'") >= 0 && DATEDIFF(date,"'.$endDate.'") <= 0';
+								$sql = 'SELECT * FROM newsfeed WHERE DATEDIFF(date,"'.$startDate.'") >= 0 && DATEDIFF(date,"'.$endDate.'") <= 0 ORDER BY date DESC';
 							}
-							echo $sql."<br />";
 							$news = mysql_query($sql);
 							while($headlines = mysql_fetch_array($news)){
 								$conversations['data'][$headlines['id']] = array();
@@ -70,7 +69,10 @@
 								$conversations['data'][$headlines['id']]["keywords"] = $headlines['keywords'];
 								$conversations['data'][$headlines['id']]["pages"] = $headlines['page'];
 							}
-							$conversations['message'] = count($conversations['data'])." headline(s) found from '".$startDate."' to '".$endDate."' for keywords '".$keyword."'";
+							$conversations['search_message'] = count($conversations['data'])." headline(s) found from '".$startDate."' to '".$endDate."' for keywords '".$keyword."'";
+							if(count($conversations['data']) == 0){
+								$conversations['message'] = "No headlines found";		
+							}
 						}
 						else{
 							$conversations['err_message'] = "Incomplete Parameters!";
