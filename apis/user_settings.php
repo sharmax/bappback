@@ -36,6 +36,7 @@
 					}
 				}
 				else{
+					$conversations['name'] = $userinfo['name'];
 					$conversations['mobile_number'] = $userinfo['mobile'];
 					$conversations['email_id'] = $userinfo['email'];
 					$conversations['Image'] = "http://172.21.1.15/uploads/profilepics/".$userinfo['avatar'];

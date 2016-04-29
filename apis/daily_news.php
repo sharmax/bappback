@@ -52,7 +52,7 @@
 								$sql = 'SELECT * FROM newsfeed WHERE DATEDIFF(date,"'.$startDate.'") >= 0 and DATEDIFF(date,"'.$endDate.'") <= 0 and ('.implode(" OR ", $sql).')';
 							}
 							else{
-								$sql = 'SELECT * FROM newsfeed WHERE DATEDIFF(date,"'.$startDate.'") >= 0 && DATEDIFF(date,"'.$endDate.'") <= 0 ORDER BY date DESC';
+								$sql = 'SELECT * FROM newsfeed WHERE DATEDIFF(date,"'.$startDate.'") >= 0 and DATEDIFF(date,"'.$endDate.'") <= 0 ORDER BY date DESC';
 							}
 							$news = mysql_query($sql);
 							while($headlines = mysql_fetch_array($news)){
@@ -69,7 +69,7 @@
 								$conversations['data'][$headlines['id']]["keywords"] = $headlines['keywords'];
 								$conversations['data'][$headlines['id']]["pages"] = $headlines['page'];
 							}
-							$conversations['search_message'] = count($conversations['data'])." headline(s) found from '".$startDate."' to '".$endDate."' for keywords '".$keyword."'";
+							$conversations['search_message'] = count($conversations['data'])." headline(s) found from '".$startDate."' to '".$endDate."' for keywords ' ".$keyword." '";
 							if(count($conversations['data']) == 0){
 								$conversations['message'] = "No headlines found";		
 							}
