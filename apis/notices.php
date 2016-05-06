@@ -20,5 +20,6 @@
 			$notices['data']['botw']['image'] = $botw['book_image_path'];
 			$notices['data']['botw']['type'] = "botw";
 		}
+	}
 	echo json_encode($notices);
 ?>
