@@ -21,12 +21,9 @@
 					for($i = 1; $i <= 4; $i++){
 						$conversations['data'][$result['code']]['books']['book'.$i] =  array();
 						$conversations['data'][$result['code']]['journals']['journal'.$i] =  array();
-						$conversations['data'][$result['code']]['books']['book'.$i]['title'] = $result['title'.$i];
-						$conversations['data'][$result['code']]['books']['book'.$i]['author'] = $result['auth'.$i];
 						$conversations['data'][$result['code']]['books']['book'.$i]['pic'] = $result['pic'.$i];
 						$conversations['data'][$result['code']]['books']['book'.$i]['url'] = $result['url'.$i];
 						$conversations['data'][$result['code']]['books']['book'.$i]['type'] = $result['book_type_'.$types[$i-1]];
-						$conversations['data'][$result['code']]['journals']['journal'.$i]['title'] = $result['j'.$i];
 						$conversations['data'][$result['code']]['journals']['journal'.$i]['pic'] = $result['tc'.$i];
 						$conversations['data'][$result['code']]['journals']['journal'.$i]['url'] = $result['jurl'.$i];
 						$conversations['data'][$result['code']]['journals']['journal'.$i]['type'] = $result['Journal_type_'.$types[$i-1]];
