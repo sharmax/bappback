@@ -16,7 +16,8 @@
               $response["data"][$row["sno"]] = array();
               $response["data"][$row["sno"]]["particulars"] = $row["particulars"];
               $response["data"][$row["sno"]]["brand"] = $row["Brand_Name"];
-              $response["data"][$row["sno"]]["found_by"] = $row["Found_By"];
+              $response["data"][$row["sno"]]["date"] = $row["date"];
+              $response["data"][$row["sno"]]["time"] = $row["time"];
               $response["data"][$row["sno"]]["status"] = $row["status"];
           }
           $response["success"] = 1;
