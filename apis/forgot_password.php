@@ -37,12 +37,15 @@
             }
           }
           else{
-            $response['err_message'] = "Invalid BITS Email!";
+            $response['err_message'] = "Something went Wrong!";
           }
         }
         else{
           $response['err_message'] = "Invalid BITS Email!";
         }
+      else{
+        $response['err_message'] = "Invalid Username!";
+      }
     }
     else{
       $response['err_message'] = "Invalid Username!";	

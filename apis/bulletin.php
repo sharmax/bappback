@@ -16,8 +16,8 @@
 				while($result = mysql_fetch_array($res)){
 					$conversations['data'][$result['code']]['books'] = array();
 					$conversations['data'][$result['code']]['journals'] = array();
-					$conversations['data']['issue'] = $result['issue_number'];
-					$conversations['data']['volume'] = $result['volume_number'];
+          $conversations['issue'] = $result['issue_number'];
+					$conversations['volume'] = $result['volume_number'];
 					for($i = 1; $i <= 4; $i++){
 						$conversations['data'][$result['code']]['books']['book'.$i] =  array();
 						$conversations['data'][$result['code']]['journals']['journal'.$i] =  array();

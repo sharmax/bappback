@@ -74,12 +74,31 @@
 								$conversations['message'] = "No headlines found";		
 							}
 						}
-						else{
-							$conversations['err_message'] = "Incomplete Parameters!";
-						}
-					}
+          }
+          else if($action == "today"){
+            $conversations['data'] = array();
+            $today = date("Y-m-d");
+            $news = mysql_query("select * from newsfeed where date = '".$today."' ORDER by date DESC");
+            while($headlines = mysql_fetch_array($news)){
+              $conversations['data'][$headlines['id']] = array();
+              $conversations['data'][$headlines['id']]["news_type"] = $headlines['news_type'];
+              $conversations['data'][$headlines['id']]["title"] = $headlines['title'];
+              $conversations['data'][$headlines['id']]["url"] = $headlines['url'];
+              if($headlines['url'] == "" && $headlines['image_path'] != ""){
+                $conversations['data'][$headlines['id']]["url"] = $headlines['image_path'];
+              }
+              $conversations['data'][$headlines['id']]["date"] = $headlines['date'];
+              $conversations['data'][$headlines['id']]["added_by"] = $headlines['added_by'];
+              $conversations['data'][$headlines['id']]["newspaper"] = $headlines['newspaper_name'];
+              $conversations['data'][$headlines['id']]["keywords"] = $headlines['keywords'];
+              $conversations['data'][$headlines['id']]["pages"] = $headlines['page'];
+            }
+            if(count($conversations['data']) == 0){
+              $conversations['message'] = "No headlines found";		
+            }
+          }
 					else{
-						$conversations['err_message'] = "Incomplete Parameters!";
+						$conversations['err_message'] = "Invalid Action!";
 					}
 				}
 				else{
