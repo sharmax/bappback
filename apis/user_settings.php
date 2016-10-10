@@ -1,7 +1,7 @@
 <?php
 	include("../config.php");
-	$conversations['Message'] = '';
-	$conversations['status'] = 1;
+	$settings['Message'] = '';
+	$settings['status'] = 0;
 	if(isset($_GET['username'],$_GET['password'])){
 		$user = $_GET['username'];
 		$password = $_GET['password'];
@@ -9,50 +9,65 @@
 			if(sha1($password) == $userinfo['password']){
 				if(isset($_GET['change_type'])){
 					$change = $_GET['change_type'];
-					if(isset($_GET['new_value'])){
-						$value = $_GET['new_value'];
+					if($change == "2" || isset($_GET['new_value'])){
 						if($change == '0'){
-						$new_password = sha1($value);
-						if(mysql_query("update users set password = '".$new_password."' where bitsid = '".$user."'")){
-								$conversations['status'] = 0;
+              $value = $_GET['new_value'];
+  						$new_password = sha1($value);
+  						if(mysql_query("update users set password = '".$new_password."' where bitsid = '".$user."'")){
+								$settings['status'] = 1;
 							}
 							else{
-								$conversations['Message'] = "Something Went Wrong";
+								$settings['Message'] = "Something Went Wrong";
 							}
 						}
 						else if($change == '1'){
+              $value = $_GET['new_value'];
 							if(mysql_query("update users set mobile = '".$value."' where bitsid = '".$user."'")){
-								$conversations['status'] = 0;
+								$settings['status'] = 1;
 							}
 							else{
-								$conversations['Message'] = "Something Went Wrong";
+								$settings['Message'] = "Something Went Wrong";
 							}
 						}
 						else if($change == '2'){
+              if(isset($_POST['new_value'])){
+                $image = $_POST['new_value'];
+                $path = "../uploads/profilepics/".$userinfo['id'].".jpg";
+                if(file_put_contents($path, base64_decode($image))){
+                  $settings['status'] = 1;
+                  $settings['file_name'] = $userinfo['id'].".jpg";
+                }
+                else{
+                  $settings['Message'] = "Something Went Wrong";
+                }
+              }
+              else{
+                $settings = "Image not provided!";
+              }
 						}
 					}
 					else{
-						$conversations['Message'] = "Incomplete Parameters!";
+						$settings['Message'] = "Incomplete Parameters!";
 					}
 				}
 				else{
-					$conversations['name'] = $userinfo['name'];
-					$conversations['mobile_number'] = $userinfo['mobile'];
-					$conversations['email_id'] = $userinfo['email'];
-					$conversations['Image'] = "http://172.21.1.15/uploads/profilepics/".$userinfo['avatar'];
-					$conversations['status'] = 0;
+					$settings['name'] = $userinfo['name'];
+					$settings['mobile_number'] = $userinfo['mobile'];
+					$settings['email_id'] = $userinfo['email'];
+					$settings['Image'] = "http://172.21.1.15/uploads/profilepics/".$userinfo['avatar'];
+					$settings['status'] = 0;
 				}
 			}
 			else{
-				$conversations['Message'] = 'Invalid Password!';
+				$settings['Message'] = 'Invalid Password!';
 			}
 		}
 		else{
-			$conversations['Message'] = "Invalid Username!";	
+			$settings['Message'] = "Invalid Username!";	
 		}
 	}
 	else{
-		$conversations['Message'] = "Incomplete Parameters!";
+		$settings['Message'] = "Incomplete Parameters!";
 	}
-	echo json_encode($conversations);
+	echo json_encode($settings);
 ?>
